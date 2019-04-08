@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.encrypt;
+package com.ebrightmoon.jni.encrypt;
 
 import android.util.Base64;
 

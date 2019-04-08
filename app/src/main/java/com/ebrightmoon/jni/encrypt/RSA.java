@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.encrypt;
+package com.ebrightmoon.jni.encrypt;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Key;
@@ -20,6 +20,7 @@ import javax.crypto.Cipher;
 /**
  * 作者：create by  Administrator on 2019/2/18
  * 邮箱：2315813288@qq.com
+ * 操作：分段加密
  */
 public class RSA {
 

@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.view;
+package com.ebrightmoon.jni.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

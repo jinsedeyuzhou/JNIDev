@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.crypto;
+package com.ebrightmoon.jni.crypto;
 
 
 import android.content.Context;

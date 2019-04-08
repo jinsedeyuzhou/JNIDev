@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.utils;
+package com.ebrightmoon.jni.utils;
 
 import android.content.Context;
 import android.content.res.Resources;

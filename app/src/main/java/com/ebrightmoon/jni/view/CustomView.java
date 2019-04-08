@@ -1,4 +1,4 @@
-package com.ebrightmoon.jnidev.view;
+package com.ebrightmoon.jni.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,10 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.DebugUtils;
 import android.view.View;
-
-import com.ebrightmoon.jnidev.utils.DensityUtils;
 
 /**
  *
