@@ -6,7 +6,7 @@ import android.content.Context;
 public class Crypto {
 
     static {
-        System.loadLibrary("Crypto");
+        System.loadLibrary("crypto");
     }
 
 
