@@ -14,7 +14,7 @@ import java.io.OutputStream;
 
 /**
  * 作者：create by  Administrator on 2019/2/18
- * 邮箱：2315813288@qq.com
+ * 邮箱：
  */
 public class Base64Utils {
     /**

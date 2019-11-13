@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.ebrightmoon.jni.crypto.Crypto;
 import com.ebrightmoon.jni.encrypt.AESCrypt;
+
+import java.security.GeneralSecurityException;
 
 /**
  * 加密解密测试
@@ -39,39 +42,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
         initData();
-
         crypto = new Crypto();
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
         } else {
-//TODO
+
         }
 
-
-        try {
-            String cleartext = "15300086234";
-//            Map<String, Object> stringObjectMap = RSAHelper.initKey();
-//            System.out.println("私钥======================"+RSAHelper.getPrivateKey(stringObjectMap));
-//            System.out.println("公钥======================"+RSAHelper.getPublicKey(stringObjectMap));
-//            String pwd=RSAHelper.encryptByPublicKey(cleartext,RSAHelper.getPublicKey(stringObjectMap));
-//            String passwd="qdrCx60LRnkYGuz7F9XuNYhovOHW5rvGTkh/74c4BzYl5++RykDQjQJB0mPqxMeXmQQ55kKrYJiDXi1nVEpLfi+PiPzKdOA1VYekZ84jn7u5b4cXYknvSyJJvpriILgjwg+Lcl49d5QMwAAJHyPov7+0i3joeqIlahVNKXb4be8=";
-//            System.out.println("加密 =================="+pwd);
-//            System.out.println("解密 =================="+ RSAHelper.decryptByPrivateKey(pwd,RSAHelper.getPrivateKey(stringObjectMap)));
-//            System.out.println("=================="+ RSAHelper.decryptByPrivateKey(passwd,serverPrivateKey));
-//            System.out.println("=================="+ DESUtils.encrypt("15300086234","bihupicc"));
-//            System.out.println("=================="+DESUtils.decrypt(DESUtils.encrypt("15300086234","bihupicc"),"bihupicc"));
-            String pass = AESCrypt.encrypt("bihupicc", "15300086234");
-//            System.out.println("================="+ Base64.encodeBase64("15300086234".getBytes()));
-            System.out.println("加密==================" + pass);
-            System.out.println("解密==================" + AESCrypt.decrypt("bihupicc", pass));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
     }
 
     /**
@@ -120,11 +100,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             //解密
             case R.id.btn_decode:
-
+                if (TextUtils.isEmpty(et_encode_text.getText().toString().trim()))
+                {
+                    Toast.makeText(this,"密文为空",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 decodeData(et_encode_text.getText().toString().trim());
                 break;
             //加密
             case R.id.btn_encode:
+                if (TextUtils.isEmpty(et_decode_text.getText().toString().trim()))
+                {
+                    Toast.makeText(this,"密文为空",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 encodeData(et_decode_text.getText().toString().trim());
                 break;
         }
@@ -134,7 +123,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 加密数据
      */
     private void encodeData(String text) {
-        String password=crypto.encode(text, 3);
+//        String password=crypto.encode(text, 3);
+        String password= null;
+        try {
+            password = AESCrypt.encrypt("123456", text);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         switch (rg_type.getCheckedRadioButtonId())
         {
             case R.id.rb_aes:
@@ -157,7 +152,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void decodeData(String text) {
 
-        String laws=crypto.decode(text, 3);
+//        String laws=crypto.decode(text, 3);
+        String laws= null;
+        try {
+            laws = AESCrypt.decrypt("123456", text);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         switch (rg_type.getCheckedRadioButtonId())
         {
             case R.id.rb_aes:

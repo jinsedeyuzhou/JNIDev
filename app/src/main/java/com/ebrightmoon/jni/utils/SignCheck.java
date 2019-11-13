@@ -24,9 +24,19 @@ import java.util.zip.ZipFile;
 
 /**
  * 作者：create by  Administrator on 2019/1/24
- * 邮箱：2315813288@qq.com
- * 获取签名文件的sha值和MD5
- * keytool -list -v -keystore *.jks
+ * 邮箱：
+ * 获取签名文件的sha值和MD5:keytool -list -v -keystore *.jks
+ *
+ *  SignCheck signCheck = new SignCheck(mContext, "A8:D0:59:77:8D:BE:48:0D:92:2E:C0:08:DE:08:65:CD:88:C1:4C:92");
+ *                     if (signCheck.check()) {
+ *                         //TODO 签名正常
+ *                     } else {
+ *                         Toast.makeText(mContext.getApplicationContext(),"签名校验不通过，系统退出",Toast.LENGTH_LONG).show();
+ *                         finish();
+ *                         ActivityManager.getInstance().finishAllActivity();
+ *                         System.exit(0);
+ *                     }
+ *
  */
 public class SignCheck {
 
@@ -93,25 +103,13 @@ public class SignCheck {
 
         //证书工厂类，这个类实现了出厂合格证算法的功能
         CertificateFactory cf = null;
-
-        try {
-            cf = CertificateFactory.getInstance("X509");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         //X509 证书，X.509 是一种非常通用的证书格式
         X509Certificate c = null;
-
-        try {
-            c = (X509Certificate) cf.generateCertificate(input);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         String hexString = null;
-
         try {
+            cf = CertificateFactory.getInstance("X509");
+            c = (X509Certificate) cf.generateCertificate(input);
+
             //加密算法的类，这里的参数可以使 MD4,MD5 等加密算法
             MessageDigest md = MessageDigest.getInstance("SHA1");
 
@@ -125,6 +123,8 @@ public class SignCheck {
             e1.printStackTrace();
         } catch (CertificateEncodingException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return hexString;
     }
@@ -134,9 +134,9 @@ public class SignCheck {
 
         StringBuilder str = new StringBuilder(arr.length * 2);
 
-        for (int i = 0; i <arr.length; i++) {
+        for (int i = 0; i < arr.length; i++) {
             String h = Integer.toHexString(arr[i]);
-            int l =h.length();
+            int l = h.length();
             if (l == 1)
                 h = "0" + h;
             if (l > 2)
@@ -150,6 +150,7 @@ public class SignCheck {
 
     /**
      * 检测签名是否正确
+     * 将判断字符串的逻辑放到so库中
      * @return true 签名正常 false 签名不正常
      */
     public boolean check() {
@@ -160,7 +161,7 @@ public class SignCheck {
             if (this.cer.equals(this.realCer)) {
                 return true;
             }
-        }else {
+        } else {
             Log.e(TAG, "未给定真实的签名 SHA-1 值");
         }
         return false;
@@ -168,8 +169,11 @@ public class SignCheck {
 
     /**
      * 通过检查apk包的MD5摘要值来判断代码文件是否被篡改
-     *
-     * @param orginalMD5 原始Apk包的MD5值
+     * 需要提前判断 获取接口中的md5值 可以在so库中判断
+     *  原始Apk包的MD5值方法
+     *  安装后会在data/app/包名/base.apk 解安装的apk
+     *  系统apk 安装后会在/system/app目录下
+     *  @param orginalMD5
      */
     public static void apkVerifyWithMD5(Context context, String orginalMD5) {
         String apkPath = context.getPackageCodePath(); // 获取Apk包存储路径
@@ -230,7 +234,7 @@ public class SignCheck {
     /**
      * 通过检查classes.dex文件的CRC32摘要值来判断文件是否被篡改
      *
-     * @param orginalCRC 原始classes.dex文件的CRC值
+     * @param orginalCRC 原始classes.dex文件的CRC值: crc32 *.apk
      */
     public static void apkVerifyWithCRC(Context context, String orginalCRC) {
         String apkPath = context.getPackageCodePath(); // 获取Apk包存储路径

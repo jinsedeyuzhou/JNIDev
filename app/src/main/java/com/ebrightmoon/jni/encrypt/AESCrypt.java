@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * 作者：create by  Administrator on 2019/2/12
- * 邮箱：2315813288@qq.com
+ * 邮箱：
  */
 public class AESCrypt {
 
