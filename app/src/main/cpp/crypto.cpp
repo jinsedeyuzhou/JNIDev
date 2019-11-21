@@ -21,5 +21,6 @@ Java_com_ebrightmoon_jni_crypto_Crypto_decrypt(JNIEnv *env, jobject instance, js
     // TODO
     env->ReleaseStringUTFChars(decrypt_, decrypt);
     std::string hello = "Hello from Cdfasf  dsaf";
+
     return env->NewStringUTF(hello.c_str());
 }
