@@ -1,0 +1,16 @@
+{
+  "buildFiles": [
+    "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/wyy/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/debug/x86 --target clean"
+  ],
+  "libraries": {
+    "crypto-Debug-x86": {
+      "artifactName": "crypto",
+      "buildCommand": "/Users/wyy/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/debug/x86 --target crypto",
+      "abi": "x86",
+      "output": "/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/debug/obj/x86/libcrypto.so"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# ninja log v5
+0	445	0	CMakeFiles/crypto.dir/crypto.cpp.o	fdf771dfebcaa988
+446	483	0	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libcrypto.so	ef55858868dab7f1
+0	289	0	CMakeFiles/crypto.dir/crypto.cpp.o	fdf771dfebcaa988
+290	348	0	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libcrypto.so	ef55858868dab7f1

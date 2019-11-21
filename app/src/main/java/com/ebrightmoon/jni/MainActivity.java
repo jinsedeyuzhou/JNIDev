@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton rb_aes;
     private RadioButton rb_des;
     private RadioButton rb_rsa;
+    private String password="123456";
 
 
     @Override
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rb_aes = findViewById(R.id.rb_aes);
         rb_des = findViewById(R.id.rb_des);
         rb_rsa = findViewById(R.id.rb_rsa);
-
+        rg_type.check(R.id.rb_aes);
     }
 
 
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_encode:
                 if (TextUtils.isEmpty(et_decode_text.getText().toString().trim()))
                 {
-                    Toast.makeText(this,"密文为空",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"内容为空",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 encodeData(et_decode_text.getText().toString().trim());
@@ -124,19 +125,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void encodeData(String text) {
 //        String password=crypto.encode(text, 3);
-        String password= null;
-        try {
-            password = AESCrypt.encrypt("123456", text);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+        String encodeData= null;
+
         switch (rg_type.getCheckedRadioButtonId())
         {
             case R.id.rb_aes:
-
+                try {
+                    encodeData = AESCrypt.encrypt(password, text);
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.rb_des:
-
+                encodeData=crypto.encrypt(text);
                 break;
             case R.id.rb_rsa:
 
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        et_decode_text.setText(password);
+        et_encode_text.setText(encodeData);
     }
 
     /**
@@ -154,18 +155,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        String laws=crypto.decode(text, 3);
         String laws= null;
-        try {
-            laws = AESCrypt.decrypt("123456", text);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+
         switch (rg_type.getCheckedRadioButtonId())
         {
             case R.id.rb_aes:
-
+                try {
+                    laws = AESCrypt.decrypt(password, text);
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.rb_des:
-
+                laws=crypto.decrypt(text);
                 break;
             case R.id.rb_rsa:
 
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        et_encode_text.setText(laws);
+        et_decode_text.setText(laws);
 
     }
 }

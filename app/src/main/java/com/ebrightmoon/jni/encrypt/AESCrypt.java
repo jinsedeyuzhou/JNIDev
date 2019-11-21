@@ -34,6 +34,8 @@ public class AESCrypt {
     public static boolean DEBUG_LOG_ENABLED = false;
 
 
+
+
     /**
      * Generates SHA256 hash of the password which is used as key
      *
