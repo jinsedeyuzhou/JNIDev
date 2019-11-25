@@ -15,6 +15,12 @@ android {
                 arguments "-DANDROID_STL=c++_shared"
             }
         }
+
+        ndk{
+            moduleName "jnidemo3"
+            abiFilters 'x86','armeabi-v7a','arm64-v8a'
+            ldLibs "log"
+        }
     }
     buildTypes {
         release {
@@ -22,9 +28,45 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
     externalNativeBuild {
         cmake {
+            version "3.10.2"
             path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
+    flavorDimensions 'cpuArch'
+    productFlavors {
+        arm7 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'armeabi-v7a'
+            }
+        }
+        arm8 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+        }
+        x86 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'x86'
+            }
+        }
+        x86_64 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'x86_64'
+            }
+        }
+        universal {
+            dimension 'cpuArch'
+            // include all default ABIs. with NDK-r16,  it is:
+            //   armeabi-v7a, arm64-v8a, x86, x86_64
         }
     }
 }

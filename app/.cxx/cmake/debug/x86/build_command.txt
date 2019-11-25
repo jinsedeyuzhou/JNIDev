@@ -1,4 +1,4 @@
-Executable : /Users/wyy/Library/Android/sdk/cmake/3.6.4111459/bin/cmake
+Executable : /Users/wyy/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake
 arguments : 
 -H/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp
 -B/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/debug/x86
@@ -8,9 +8,14 @@ arguments :
 -DCMAKE_BUILD_TYPE=Debug
 -DANDROID_NDK=/Users/wyy/Library/Android/sdk/ndk-bundle
 -DCMAKE_CXX_FLAGS=
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_ANDROID_ARCH_ABI=x86
+-DCMAKE_SYSTEM_VERSION=16
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_ANDROID_NDK=/Users/wyy/Library/Android/sdk/ndk-bundle
 -DCMAKE_TOOLCHAIN_FILE=/Users/wyy/Library/Android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake
--DCMAKE_MAKE_PROGRAM=/Users/wyy/Library/Android/sdk/cmake/3.6.4111459/bin/ninja
--GAndroid Gradle - Ninja
+-G Ninja
+-DCMAKE_MAKE_PROGRAM=/Users/wyy/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
 -DANDROID_STL=c++_shared
 jvmArgs : 
 

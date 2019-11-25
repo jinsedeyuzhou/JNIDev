@@ -1,0 +1,3 @@
+/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/arm8Release/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/arm8Release/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/arm8Release/armeabi-v7a/CMakeFiles/crypto.dir

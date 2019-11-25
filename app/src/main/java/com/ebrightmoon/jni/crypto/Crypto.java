@@ -10,7 +10,7 @@ public class Crypto {
     }
 
 
-    public native String stringFromJNI(Context context);
+    public native String stringFromJNI();
 
     public native String encrypt(String encrypt);
 
