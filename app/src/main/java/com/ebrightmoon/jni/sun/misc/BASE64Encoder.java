@@ -22,7 +22,7 @@
   22    * or visit www.oracle.com if you need additional information or have any
   23    * questions.
   24    */
-package sun.misc;
+package com.ebrightmoon.jni.sun.misc;
 
 import java.io.OutputStream;
 import java.io.InputStream;

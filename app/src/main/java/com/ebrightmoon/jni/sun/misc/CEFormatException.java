@@ -1,4 +1,4 @@
-package sun.misc;
+package com.ebrightmoon.jni.sun.misc;
 
 import java.io.IOException;
 

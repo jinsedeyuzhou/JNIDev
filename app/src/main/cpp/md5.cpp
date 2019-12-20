@@ -1,13 +1,3 @@
-/**
- * @file md5.cpp
- * @The implement of md5.
- * @author Jiewei Wei
- * @mail weijieweijerry@163.com
- * @github https://github.com/JieweiWei
- * @data Oct 19 2014
- *
- */
-
 #include "md5.h"
 
 /* Define the static member of MD5. */

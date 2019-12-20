@@ -16,8 +16,15 @@ add_library( # Sets the name of the library.
         # Sets the library as a shared library.
         SHARED
 
+        # 只能加载一个 JNI_OnLoad 方法
         # Provides a relative path to your source file(s).
-        crypto.cpp)
+        crypto.c
+        jni_tool.cpp
+        md5.cpp
+        aes.c
+        base64.c
+        memory-util.cpp
+        )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

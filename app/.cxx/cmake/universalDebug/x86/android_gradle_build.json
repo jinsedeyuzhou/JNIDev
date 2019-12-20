@@ -16,12 +16,42 @@
     "crypto-Debug-x86": {
       "buildCommand": "/Users/wyy/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/universalDebug/x86\" crypto",
       "buildType": "debug",
-      "toolchain": "1557688828",
+      "toolchain": "3587583296",
       "abi": "x86",
       "artifactName": "crypto",
       "files": [
         {
-          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/crypto.cpp",
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/jni_tool.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/md5.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/memory-util.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/crypto.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/aes.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/base64.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/calculator.c",
           "flagsOrdinal": 1,
           "workingDirectoryOrdinal": 0
         }
@@ -31,11 +61,14 @@
     }
   },
   "toolchains": {
-    "1557688828": {
+    "3587583296": {
+      "cCompilerExecutable": "/Users/wyy/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
       "cppCompilerExecutable": "/Users/wyy/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
     }
   },
-  "cFileExtensions": [],
+  "cFileExtensions": [
+    "c"
+  ],
   "cppFileExtensions": [
     "cpp"
   ]

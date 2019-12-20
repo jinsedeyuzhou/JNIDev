@@ -1,13 +1,13 @@
-#include <jni.h>
-#include <string>
 #include "aes.h"
 #include "md5.h"
-//#include <android/log.h>
 
-static const char *app_packageName = "com.wtuadn.demo";
-static const int app_signature_hash_code = 1967296062;
+#include "jni_tool.hpp"
+
+static const char *app_packageName = "com.ebrightmoon.jni";
+static const int app_signature_hash_code = -349316582;
 static const uint8_t AES_KEY[] = "xS544RXNm0P4JVLHIEsTqJNzDbZhiLjr";
 static const uint8_t AES_IV[] = "KXTUDEdBs9zGlvy7";
+//加盐 字符串
 static const string PWD_MD5_KEY = "4J9lKuR2c8OuDPBAniEy5USFQdSM0An4";
 
 static jobject getApplication(JNIEnv *env) {
@@ -78,7 +78,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_wtuadn_jnitool_JNITool_jniencrypt(JNIEnv *env, jclass type, jbyteArray jbArr) {
+Java_com_ebrightmoon_jni_crypto_JNITool_jniencrypt(JNIEnv *env, jclass type, jbyteArray jbArr) {
 
     char *str = NULL;
     jsize alen = env->GetArrayLength(jbArr);
@@ -95,11 +95,11 @@ Java_com_wtuadn_jnitool_JNITool_jniencrypt(JNIEnv *env, jclass type, jbyteArray 
 
 extern "C"
 JNIEXPORT jbyteArray JNICALL
-Java_com_wtuadn_jnitool_JNITool_jnidecrypt(JNIEnv *env, jclass type, jstring out_str) {
+Java_com_ebrightmoon_jni_crypto_JNITool_jnidecrypt(JNIEnv *env, jclass type, jstring out_str) {
 
     const char *str = env->GetStringUTFChars(out_str, 0);
     char *result = AES_ECB_PKCS7_Decrypt(str, AES_KEY);//AES ECB PKCS7Padding解密
-//    char *result = AES_CBC_PKCS7_Decrypt(str, AES_KEY, AES_IV);//AES CBC PKCS7Padding解密
+//    char *result = AES_CBC_PKCS7_Decrypt(str, AES_KEY, AES_IV);//AES CBC PKCS7Padding解密 弱检验不建议使用
     env->ReleaseStringUTFChars(out_str, str);
 
     jsize len = (jsize) strlen(result);
@@ -110,8 +110,7 @@ Java_com_wtuadn_jnitool_JNITool_jnidecrypt(JNIEnv *env, jclass type, jstring out
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_wtuadn_jnitool_JNITool_pwdMD5(JNIEnv *env, jclass type, jstring out_str) {
-
+Java_com_ebrightmoon_jni_crypto_JNITool_pwdMD5(JNIEnv *env, jclass type, jstring out_str) {
     const char *str = env->GetStringUTFChars(out_str, 0);
     string result = MD5(MD5(PWD_MD5_KEY + string(str)).toStr()).toStr();//加盐后进行两次md5
     env->ReleaseStringUTFChars(out_str, str);
@@ -119,3 +118,24 @@ Java_com_wtuadn_jnitool_JNITool_pwdMD5(JNIEnv *env, jclass type, jstring out_str
 }
 
 
+
+
+extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_stringFromJNI(
+        JNIEnv *env,
+        jobject thiz,
+        jobject argContext) {
+
+    jstring imei = getAppendedString(env, thiz,
+                                     getDeviceId(env, thiz, argContext),
+                                     getSerialNumber(env, thiz, argContext));
+    jstring sign = getPublicKey(env, thiz, argContext);
+    jstring imei_sign = getAppendedString(env, thiz, imei, sign);
+    jstring imei_sign_package = getAppendedString(env, thiz,
+                                                  imei_sign,
+                                                  getPackageName(env, thiz, argContext));
+    //请再加入自己的移位或替换 或其他加密算法,例如我又append了一次imei
+    imei_sign_package = getAppendedString(env, thiz,
+                                          imei_sign_package,
+                                          imei);
+    return getMD5(env, imei_sign_package);
+}

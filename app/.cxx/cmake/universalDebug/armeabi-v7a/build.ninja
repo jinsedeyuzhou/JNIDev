@@ -56,9 +56,45 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Order-only phony target for crypto
 
 build cmake_object_order_depends_target_crypto: phony
-build CMakeFiles/crypto.dir/crypto.cpp.o: CXX_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/crypto.cpp || cmake_object_order_depends_target_crypto
+build CMakeFiles/crypto.dir/crypto.c.o: C_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/crypto.c || cmake_object_order_depends_target_crypto
   DEFINES = -Dcrypto_EXPORTS
-  DEP_FILE = CMakeFiles/crypto.dir/crypto.cpp.o.d
+  DEP_FILE = CMakeFiles/crypto.dir/crypto.c.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/jni_tool.cpp.o: CXX_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/jni_tool.cpp || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/jni_tool.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/md5.cpp.o: CXX_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/md5.cpp || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/md5.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/aes.c.o: C_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/aes.c || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/aes.c.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/base64.c.o: C_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/base64.c || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/base64.c.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/calculator.c.o: C_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/calculator.c || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/calculator.c.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  OBJECT_DIR = CMakeFiles/crypto.dir
+  OBJECT_FILE_DIR = CMakeFiles/crypto.dir
+build CMakeFiles/crypto.dir/memory-util.cpp.o: CXX_COMPILER__crypto /Users/wyy/AndroidProject/JNIDev/app/src/main/cpp/memory-util.cpp || cmake_object_order_depends_target_crypto
+  DEFINES = -Dcrypto_EXPORTS
+  DEP_FILE = CMakeFiles/crypto.dir/memory-util.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles/crypto.dir
   OBJECT_FILE_DIR = CMakeFiles/crypto.dir
@@ -70,7 +106,7 @@ build CMakeFiles/crypto.dir/crypto.cpp.o: CXX_COMPILER__crypto /Users/wyy/Androi
 #############################################
 # Link the shared library /Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/universalDebug/obj/armeabi-v7a/libcrypto.so
 
-build /Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/universalDebug/obj/armeabi-v7a/libcrypto.so: CXX_SHARED_LIBRARY_LINKER__crypto CMakeFiles/crypto.dir/crypto.cpp.o | /Users/wyy/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/16/liblog.so
+build /Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/universalDebug/obj/armeabi-v7a/libcrypto.so: CXX_SHARED_LIBRARY_LINKER__crypto CMakeFiles/crypto.dir/crypto.c.o CMakeFiles/crypto.dir/jni_tool.cpp.o CMakeFiles/crypto.dir/md5.cpp.o CMakeFiles/crypto.dir/aes.c.o CMakeFiles/crypto.dir/base64.c.o CMakeFiles/crypto.dir/calculator.c.o CMakeFiles/crypto.dir/memory-util.cpp.o | /Users/wyy/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/16/liblog.so
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info
   LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--exclude-libs,libunwind.a -Wl,--no-undefined -Qunused-arguments -Wl,-z,noexecstack
   LINK_LIBRARIES = -llog -latomic -lm

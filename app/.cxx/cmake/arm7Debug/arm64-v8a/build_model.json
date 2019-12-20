@@ -5,6 +5,7 @@
       "sdkFolder": "/Users/wyy/Library/Android/sdk",
       "isNativeCompilerSettingsCacheEnabled": false,
       "isBuildOnlyTargetAbiEnabled": true,
+      "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
       "splitsAbiFilterSet": [],
       "intermediatesFolder": "/Users/wyy/AndroidProject/JNIDev/app/build/intermediates",
       "gradleModulePathName": ":app",
@@ -43,9 +44,8 @@
     "gradleBuildOutputFolder": "/Users/wyy/AndroidProject/JNIDev/app/.cxx/cxx/arm7Debug",
     "isDebuggableEnabled": true,
     "validAbiList": [
-      "ARMEABI_V7A",
       "ARM64_V8A",
-      "X86"
+      "ARMEABI_V7A"
     ],
     "buildTargetSet": []
   },

@@ -22,13 +22,82 @@ android {
             ldLibs "log"
         }
     }
+    signingConfigs {
+        v2 {
+            storeFile file("jni.jks")
+            storePassword "123456"
+            keyAlias "jnis"
+            keyPassword "123456"
+            v2SigningEnabled true
+        }
+
+        v1 {
+            storeFile file("jni.jks")
+            storePassword "123456"
+            keyAlias "jnis"
+            keyPassword "123456"
+            v1SigningEnabled true
+        }
+
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.v2
+
+            zipAlignEnabled false
+            // 不显示Log
+            buildConfigField "boolean", "TLOG", "false"
+            // 混淆打包开关
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 移除无用的resource文件
+            shrinkResources false
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+
+
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+                htmlReport true
+            }
         }
+
+        debug {
+            signingConfig signingConfigs.v1
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+                htmlReport true
+            }
+
+            // 移除无用的resource文件
+            // shrinkResources true
+            // Zipalign优化
+
+            // 移除无用的resource文件
+//            shrinkResources false
+            // Zipalign优化
+            zipAlignEnabled true
+            // 不显示Log
+//            buildConfigField "boolean", "TLOG", "false"
+            // 混淆打包开关
+            minifyEnabled false
+
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
+
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+
+
     }
 
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 
     externalNativeBuild {
         cmake {
@@ -78,4 +147,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
 }

@@ -14,12 +14,4 @@
 
 #define UTF_8 "UTF-8"
 
-#define CHECK_VALID(V) 				\
-	if(V == NULL){					\
-		LOGE("%s is null.", #V);	\
-		exit(-1);					\
-	}else{							\
-		LOGI("%s is %p.", #V, V);	\
-	}	
-	
 #endif

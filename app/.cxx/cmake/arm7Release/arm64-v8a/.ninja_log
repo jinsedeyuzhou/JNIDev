@@ -1,0 +1,24 @@
+# ninja log v5
+0	42	1574745956	build.ninja	a61662576deb4f27
+0	6	0	clean	3316197057f19e9
+0	36	1576658298	build.ninja	a61662576deb4f27
+0	80	1576658298	CMakeFiles/crypto.dir/crypto.c.o	8538de76638f5088
+1	114	1576658298	CMakeFiles/crypto.dir/base64.c.o	c1b9262f3a61a75a
+1	421	1576658298	CMakeFiles/crypto.dir/aes.c.o	1fc0c2a0d7e1fe50
+1	599	1576658298	CMakeFiles/crypto.dir/jni_tool.cpp.o	b6a9c07e15c7810f
+1	685	1576658299	CMakeFiles/crypto.dir/md5.cpp.o	cf31dcd5be173f0
+685	716	1576658299	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/arm7Release/obj/arm64-v8a/libcrypto.so	8571f40d2c169019
+1	442	1576659588	CMakeFiles/crypto.dir/jni_tool.cpp.o	b6a9c07e15c7810f
+442	482	1576659588	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/arm7Release/obj/arm64-v8a/libcrypto.so	8571f40d2c169019
+0	5	0	clean	3316197057f19e9
+1	84	1576659619	CMakeFiles/crypto.dir/crypto.c.o	8538de76638f5088
+2	113	1576659619	CMakeFiles/crypto.dir/base64.c.o	c1b9262f3a61a75a
+2	307	1576659619	CMakeFiles/crypto.dir/aes.c.o	1fc0c2a0d7e1fe50
+2	491	1576659620	CMakeFiles/crypto.dir/jni_tool.cpp.o	b6a9c07e15c7810f
+2	534	1576659620	CMakeFiles/crypto.dir/md5.cpp.o	cf31dcd5be173f0
+534	569	1576659620	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/arm7Release/obj/arm64-v8a/libcrypto.so	8571f40d2c169019
+0	36	1576660817	build.ninja	a61662576deb4f27
+0	6	0	clean	3316197057f19e9
+0	38	1576662173	build.ninja	a61662576deb4f27
+1	5	0	clean	3316197057f19e9
+0	5	0	clean	3316197057f19e9

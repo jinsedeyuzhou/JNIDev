@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ebrightmoon.jni.crypto.Crypto;
+import com.ebrightmoon.jni.crypto.JNITool;
 import com.ebrightmoon.jni.encrypt.AESCrypt;
 
 import java.security.GeneralSecurityException;
@@ -24,6 +26,7 @@ import java.security.GeneralSecurityException;
  * 加密解密测试
  */
 public class EncryActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG =EncryActivity.class.getSimpleName() ;
     private Crypto crypto;
     private static final int REQUEST_READ_PHONE_STATE = 1000;
     public static final String serverPrivateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALXwJ4I+ZJUfswcy3eeuMhQVSm/WzfIYDlYv3ni5vm1Iv06V2/49rwirPGUoT3k/rfhzx1MmMWv31UIz9yozN+7CcDDdz76wuc9kIJ4AR830ELZMTzqoHWPSAqaFKDeGKXX9PDpyPswFLCX1WtHHm6K/M+ntP+6J6Pi6mqt9P3epAgMBAAECgYAtgNXwzjgLz/TPvRog4sFlonmOhTPW88tKJQjIOvR0krg+KF7wNG89hM5DIpTV52ZUeGiG1EuSDFcLCsIrjMnVAjEQtfEzD2fEW9VUxucxdJDWyDNK6qxji+NO1vy6U779K675rFvJxmsDxNvKph1ht0gYlDn5RyFd4nrOrfgjTQJBAOPrQ4NmdWFS94NYkJ4fIseZPfRSm9NzqHlFp4Pr44nUrLKYeGVCIjnfsGAWuZ7sxLSkSSLN0mS/Rk7PH+7uv1cCQQDMWp5fBSRBCRsTB8v4YFumIPxpYms6cWChjZ1GvnR+4T5DJ/4pE768LvQP8G9Hh18JzHaxwplTDhlhJfEIHCD/AkEAiTMHOiNER6jk/DklHTpK+nJB/EB6MyitYwtOEri+CStwJjZoSzQrXEFOcBld9dA7fS5kJEJYA3OtBCXk6DTqEwJAemftZU1XIf2qUgPhka1mOGSZzSY+xIsVLq/8/VsnvLh+6wsRmtlQ7rfRSZrjjRzxOJVYo7HE1ZMkcKShdBIlUQJAd3a+zP2rqh/rJu8izyE5KGGJLMlV1wQKOPFpNAGi+90VpkW3wETvhk7RL1KIxv5jVIYqfu4vrxEkpzvY75ZKJA==";
@@ -36,7 +39,8 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
     private RadioButton rb_aes;
     private RadioButton rb_des;
     private RadioButton rb_rsa;
-    private String password="123456";
+    private String password = "123456";
+    private RadioButton rb_cus;
 
 
     @Override
@@ -45,6 +49,19 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main);
         initView();
         initData();
+
+        Log.e(TAG, "signature：" + JNITool.getSignature(this));
+        String originalStr = "123";
+        JNITool jniTool=new JNITool();
+        String encrypt = JNITool.encrypt(originalStr);
+        Log.e(TAG, "原字符串：" + originalStr);
+        Log.e(TAG, "AES ECB PKCS7Padding 加密：" + encrypt);
+        Log.e(TAG, "AES ECB PKCS7Padding 解密：" + JNITool.decrypt(encrypt));
+        Log.e(TAG, "stringFromJNI：" + jniTool.stringFromJNI(this));
+
+        String pwdStr = "pwd123456";
+        Log.e(TAG, "password: " + pwdStr);
+        Log.e(TAG, "md5再加salt: " + JNITool.pwdMD5(pwdStr));
         crypto = new Crypto();
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -52,6 +69,7 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
         } else {
 
         }
+
 
     }
 
@@ -78,6 +96,7 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
         rb_aes = findViewById(R.id.rb_aes);
         rb_des = findViewById(R.id.rb_des);
         rb_rsa = findViewById(R.id.rb_rsa);
+        rb_cus = findViewById(R.id.rb_cus);
         rg_type.check(R.id.rb_aes);
     }
 
@@ -101,18 +120,16 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             //解密
             case R.id.btn_decode:
-                if (TextUtils.isEmpty(et_encode_text.getText().toString().trim()))
-                {
-                    Toast.makeText(this,"密文为空",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(et_encode_text.getText().toString().trim())) {
+                    Toast.makeText(this, "密文为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 decodeData(et_encode_text.getText().toString().trim());
                 break;
             //加密
             case R.id.btn_encode:
-                if (TextUtils.isEmpty(et_decode_text.getText().toString().trim()))
-                {
-                    Toast.makeText(this,"内容为空",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(et_decode_text.getText().toString().trim())) {
+                    Toast.makeText(this, "内容为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 encodeData(et_decode_text.getText().toString().trim());
@@ -125,10 +142,9 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
      */
     private void encodeData(String text) {
 //        String password=crypto.encode(text, 3);
-        String encodeData= null;
+        String encodeData = null;
 
-        switch (rg_type.getCheckedRadioButtonId())
-        {
+        switch (rg_type.getCheckedRadioButtonId()) {
             case R.id.rb_aes:
                 try {
                     encodeData = AESCrypt.encrypt(password, text);
@@ -137,10 +153,13 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.rb_des:
-                encodeData=crypto.encrypt(text);
+
                 break;
             case R.id.rb_rsa:
 
+                break;
+            case R.id.rb_cus:
+                encodeData = crypto.encrypt(text, 18);
                 break;
 
         }
@@ -154,10 +173,8 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
     private void decodeData(String text) {
 
 //        String laws=crypto.decode(text, 3);
-        String laws= null;
-
-        switch (rg_type.getCheckedRadioButtonId())
-        {
+        String laws = null;
+        switch (rg_type.getCheckedRadioButtonId()) {
             case R.id.rb_aes:
                 try {
                     laws = AESCrypt.decrypt(password, text);
@@ -166,10 +183,13 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.rb_des:
-                laws=crypto.decrypt(text);
+
                 break;
             case R.id.rb_rsa:
 
+                break;
+            case R.id.rb_cus:
+                laws = crypto.decrypt(text, 18);
                 break;
 
         }

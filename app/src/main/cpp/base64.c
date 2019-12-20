@@ -12,8 +12,7 @@
 
 
 
-char *
-b64_encode (const unsigned char *src, size_t len) {
+char * b64_encode (const unsigned char *src, size_t len) {
   int i = 0;
   int j = 0;
   char *enc = NULL;

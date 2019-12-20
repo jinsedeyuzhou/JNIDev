@@ -23,7 +23,7 @@
    23    * questions.
    24    */
 
-package sun.misc;
+package com.ebrightmoon.jni.sun.misc;
 
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
@@ -119,7 +119,7 @@ public abstract class CharacterEncoder
 	 * BufferedInputStream's 122 * read method. 123
 	 */
 	protected int readFully(InputStream in, byte buffer[])
-			throws java.io.IOException
+			throws IOException
 	{
 		for (int i = 0; i < buffer.length; i++)
 		{
