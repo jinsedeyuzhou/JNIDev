@@ -1,2 +1,0 @@
-ninja: Entering directory `/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/arm7Release/x86'
-ninja: no work to do.

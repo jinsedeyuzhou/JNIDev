@@ -1,5 +1,0 @@
-# ninja log v5
-1	537	0	CMakeFiles/crypto.dir/crypto.cpp.o	71dca208109fead5
-538	587	0	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/debug/obj/arm64-v8a/libcrypto.so	f979da4ba352f253
-0	426	0	CMakeFiles/crypto.dir/crypto.cpp.o	71dca208109fead5
-426	483	0	/Users/wyy/AndroidProject/JNIDev/app/build/intermediates/cmake/debug/obj/arm64-v8a/libcrypto.so	f979da4ba352f253

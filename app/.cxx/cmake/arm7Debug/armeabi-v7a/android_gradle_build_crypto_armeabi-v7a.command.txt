@@ -1,7 +1,0 @@
-Executable : /Users/wyy/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
-arguments : 
--C
-/Users/wyy/AndroidProject/JNIDev/app/.cxx/cmake/arm7Debug/armeabi-v7a
-crypto
-jvmArgs : 
-
