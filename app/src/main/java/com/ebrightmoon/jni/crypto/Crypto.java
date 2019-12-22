@@ -11,9 +11,5 @@ public class Crypto {
 
     public native String decrypt(String decrypt,int length);
 
-    public native String encode(String encrypt, int length);
-
-    public native String decode(String decrypt, int length);
-
 
 }

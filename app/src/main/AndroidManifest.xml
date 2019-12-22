@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name="com.ebrightmoon.jni.ProxyApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,8 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+
+        <!-- 应用的Application -->
+        <meta-data
+            android:name="APPLICATION_CLASS_NAME"
+            android:value="com.ebrightmoon.myapplication.JNIApplication" />
+        <!-- 测试  权限 -->
+        <uses-library android:name="android.test.runner" />
+
         <activity
-            android:name=".HomeActivity"
+            android:name="com.ebrightmoon.jni.HomeActivity"
 
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -25,11 +35,11 @@
         </activity>
 
         <activity
-            android:name=".EncryActivity"
+            android:name="com.ebrightmoon.jni.EncryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".CalculatorActivity"
+            android:name="com.ebrightmoon.jni.CalculatorActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 

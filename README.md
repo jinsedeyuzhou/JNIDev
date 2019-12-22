@@ -75,7 +75,6 @@ public String getCertificateSHA1Fingerprint() {
 1. 确保安装了jdk并且正确配置了环境变量。  
 2. cmd中执行keytool -printcert -jarfile xxx.apk  
 
-**C++**
 
 
 ##### 3、DEX文件校验  
