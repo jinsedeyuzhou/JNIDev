@@ -1,6 +1,5 @@
 package com.ebrightmoon.jni;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
@@ -10,7 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.ArrayMap;
 
+import com.alibaba.fastjson.JSON;
+import com.ebrightmoon.jni.shell.Constant;
+import com.ebrightmoon.jni.shell.DexFile;
 import com.ebrightmoon.jni.shell.RefInvoke;
+import com.ebrightmoon.jni.shell.SecurityUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -21,56 +24,36 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import dalvik.system.DexClassLoader;
 
-/**
- * Time: 2019-12-22
- * Author:wyy
- * Description:
- */
+
 public class ProxyApplication extends Application {
-
-    @SuppressWarnings("unused")
-    private static final String appkey = "APPLICATION_CLASS_NAME";
-    private String apkFileName;
-    private String odexPath;
-    private String libPath;
-
-    // 这是context 赋值
-    @SuppressWarnings("rawtypes")
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         try {
-            // 创建两个文件夹payload_odex，payload_lib 私有的，可写的文件目录
-            File odex = this.getDir("payload_odex", MODE_PRIVATE);
-            File libs = this.getDir("payload_lib", MODE_PRIVATE);
-            odexPath = odex.getAbsolutePath();
-            libPath = libs.getAbsolutePath();
-            apkFileName = odex.getAbsolutePath() + "/Android.apk";
-            File dexFile = new File(apkFileName);
-            if (!dexFile.exists()) {
-                dexFile.createNewFile(); // 在payload_odex文件夹内，创建payload.apk
-                // 读取程序classes.dex文件
-                byte[] dexdata = this.readDexFileFromApk();
-                // 分离出解壳后的apk文件已用于动态加载
-                this.splitPayLoadFromDex(dexdata);
+            File odex = getDir("payload_odex",MODE_PRIVATE);//android art虚拟机会对dex做优化
+            File dex = getDir("payload_dex",MODE_PRIVATE);
+            if(dex.listFiles().length == 0){
+                byte[] dexData = readDexFromApk();
+                splitPrimaryDexFromShellDex(dexData,dex.getAbsolutePath());
             }
-            // 配置动态加载环境
-            Object currentActivityThread = RefInvoke.invokeStaticMethod(
-                    "android.app.ActivityThread", "currentActivityThread",
-                    new Class[]{}, new Object[]{});// 获取主线程对象
-            // http://blog.csdn.net/myarrow/article/details/14223493
-            String packageName = this.getPackageName();// 当前apk的包名
-            // 下面两句不是太理解
+            Object currentActivityThread = RefInvoke.invokeStaticMethod("android.app.ActivityThread", "currentActivityThread", new Class[] {}, new Object[] {});
+            String packageName = getPackageName();
             WeakReference wr;
-            if (Build.VERSION.SDK_INT < 19) {
+            if(Build.VERSION.SDK_INT < 19){
                 HashMap mPackages = (HashMap) RefInvoke.getFieldOjbect(
                         "android.app.ActivityThread", currentActivityThread,
                         "mPackages");
@@ -80,53 +63,107 @@ public class ProxyApplication extends Application {
                         "android.app.ActivityThread", currentActivityThread,
                         "mPackages");
                 wr = (WeakReference) mPackages.get(packageName);
-
             }
-            // 创建被加壳apk的DexClassLoader对象 加载apk内的类和本地代码（c/c++代码）
-            DexClassLoader dLoader = new DexClassLoader(apkFileName, odexPath,
-                    libPath, (ClassLoader) RefInvoke.getFieldOjbect(
+            //找到dex并通过DexClassLoader去加载
+            StringBuffer dexPaths = new StringBuffer();
+            for(File file:dex.listFiles()){
+                dexPaths.append(file.getAbsolutePath());
+                dexPaths.append(File.pathSeparator);
+            }
+            dexPaths.delete(dexPaths.length()-1,dexPaths.length());
+            DexClassLoader classLoader = new DexClassLoader(dexPaths.toString(), odex.getAbsolutePath(),getApplicationInfo().nativeLibraryDir,(ClassLoader) RefInvoke.getFieldOjbect(
                     "android.app.LoadedApk", wr.get(), "mClassLoader"));
-            // base.getClassLoader(); 是不是就等同于 (ClassLoader)
-            // RefInvoke.getFieldOjbect()? 有空验证下//?
-            // 把当前进程的DexClassLoader 设置成了被加壳apk的DexClassLoader
-            // ----有点c++中进程环境的意思~~
             RefInvoke.setFieldOjbect("android.app.LoadedApk", "mClassLoader",
-                    wr.get(), dLoader);
-
+                    wr.get(), classLoader);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    @SuppressLint("MissingSuperCall")
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    /**
+     * 从apk中读取dex文件
+     * @return
+     * @throws IOException
+     */
+    public byte[] readDexFromApk() throws IOException {
+        ByteArrayOutputStream dexByteArrayOutputSteam = new ByteArrayOutputStream();
+        System.out.println(getApplicationInfo().sourceDir);
+        ZipInputStream localZipInputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(getApplicationInfo().sourceDir)));
+        while(true){
+            ZipEntry localZipEntry = localZipInputStream.getNextEntry();
+            if(localZipEntry == null){
+                localZipInputStream.close();
+                break;
+            }
+            if(localZipEntry.getName().equals("classes.dex")){
+                byte[] arrayOfByte = new byte[1024];
+                while (true){
+                    int i = localZipInputStream.read(arrayOfByte);
+                    if(i == -1) break;
+                    dexByteArrayOutputSteam.write(arrayOfByte,0,i);
+                }
+            }
+        }
+        localZipInputStream.close();
+        return dexByteArrayOutputSteam.toByteArray();
+    }
+
+    /**
+     * 从壳的dex文件中分离出原来的dex文件
+     * @param data
+     * @param primaryDexDir
+     * @throws IOException
+     */
+    public void splitPrimaryDexFromShellDex(byte[] data, String primaryDexDir) throws IOException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+        int shellDexLen = data.length;
+        byte[] dexFileCommentLenByte = new byte[4];//dex信息长度
+        System.arraycopy(data, shellDexLen-4, dexFileCommentLenByte, 0, 4);
+        ByteArrayInputStream bais = new ByteArrayInputStream(dexFileCommentLenByte);
+        DataInputStream in = new DataInputStream(bais);
+        int dexFileCommentLen = in.readInt();
+
+        byte[] dexFileCommentByte = new byte[dexFileCommentLen];//dex信息正文
+        System.arraycopy(data,shellDexLen-4-dexFileCommentLen,dexFileCommentByte,0,dexFileCommentLen);
+        String dexFileComment = new String(dexFileCommentByte);
+        ArrayList<DexFile> dexFileArrayList = (ArrayList<DexFile>) JSON.parseArray(dexFileComment,DexFile.class);
+        int currentReadEndIndex = shellDexLen - 4 - dexFileCommentLen;//当前已经读取到的内容的下标
+        for(int i = dexFileArrayList.size()-1; i>=0; i--){//取出所有的dex,并写入到payload_dex目录下
+            DexFile dexFile = dexFileArrayList.get(i);
+            byte[] primaryDexData = new byte[dexFile.getDexLength()];
+            System.arraycopy(data,currentReadEndIndex-dexFile.getDexLength(),primaryDexData,0,dexFile.getDexLength());
+            primaryDexData = decryAES(primaryDexData);//界面
+            File primaryDexFile = new File(primaryDexDir,dexFile.getDexName());
+            if(!primaryDexFile.exists()) primaryDexFile.createNewFile();
+            FileOutputStream localFileOutputStream = new FileOutputStream(primaryDexFile);
+            localFileOutputStream.write(primaryDexData);
+            localFileOutputStream.close();
+
+            currentReadEndIndex -= dexFile.getDexLength();
+        }
+    }
+
+    public byte[] decryAES(byte[] data) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+        return SecurityUtils.AESDecrypt(Constant.AES_PRIVATE_KEY, Constant.AES_IV,Constant.AES_TYPE,data);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void onCreate() {
-        {
-            // 如果源应用配置有Appliction对象，则替换为源应用Applicaiton，以便不影响源程序逻辑。
-            String appClassName = null;
-            // 获取xml文件里配置的被加壳apk的Applicaiton
-            try {
-                ApplicationInfo ai = this.getPackageManager()
-                        .getApplicationInfo(this.getPackageName(),
-                                PackageManager.GET_META_DATA);
-                Bundle bundle = ai.metaData;
-                if (bundle != null
-                        && bundle.containsKey("APPLICATION_CLASS_NAME")) {
-                    appClassName = bundle.getString("APPLICATION_CLASS_NAME");// className
-                    // 是配置在xml文件中的。
-                    // appClassName="org.xiangbalao.domes.DemoApplication";
-                } else {
-
-                    return;
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+        String appClassName = null;
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if(bundle != null && bundle.containsKey("APPLICATION_CLASS_NAME")){
+                appClassName = bundle.getString("APPLICATION_CLASS_NAME");
+            }else{
+                super.onCreate();
+                return;
             }
             // 有值的话调用该Applicaiton
             Object currentActivityThread = RefInvoke.invokeStaticMethod(
                     "android.app.ActivityThread", "currentActivityThread",
-                    new Class[]{}, new Object[]{});
+                    new Class[] {}, new Object[] {});
             Object mBoundApplication = RefInvoke.getFieldOjbect(
                     "android.app.ActivityThread", currentActivityThread,
                     "mBoundApplication");
@@ -155,14 +192,14 @@ public class ProxyApplication extends Application {
             appinfo_In_AppBindData.className = appClassName;
             Application app = (Application) RefInvoke.invokeMethod(
                     "android.app.LoadedApk", "makeApplication", loadedApkInfo,
-                    new Class[]{boolean.class, Instrumentation.class},
-                    new Object[]{false, null});// 执行
+                    new Class[] { boolean.class, Instrumentation.class },
+                    new Object[] { false, null });// 执行
             // makeApplication（false,null）
             RefInvoke.setFieldOjbect("android.app.ActivityThread",
                     "mInitialApplication", currentActivityThread, app);
 
             Iterator it;
-            if (Build.VERSION.SDK_INT < 19) {
+            if(Build.VERSION.SDK_INT < 19){
                 // 解决了类型强转错误的问题，原因：
                 // 4.4以下系统 mProviderMap 的类型是 HashMap
                 // 4.4以上系统 mProviderMap 的类型是 ArrayMap
@@ -170,7 +207,7 @@ public class ProxyApplication extends Application {
                         "android.app.ActivityThread", currentActivityThread,
                         "mProviderMap");
                 it = mProviderMap.values().iterator();
-            } else {
+            }else{
                 ArrayMap mProviderMap = (ArrayMap) RefInvoke.getFieldOjbect(
                         "android.app.ActivityThread", currentActivityThread,
                         "mProviderMap");
@@ -185,111 +222,9 @@ public class ProxyApplication extends Application {
                         "mContext", localProvider, app);
             }
             app.onCreate();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            super.onCreate();
         }
-    }
-
-    /**
-     * 释放被加壳的apk文件，so文件
-     *
-     * @param data
-     * @throws IOException
-     */
-    private void splitPayLoadFromDex(byte[] data) throws IOException {
-        byte[] apkdata = data;
-        int ablen = apkdata.length;
-        // 取被加壳apk的长度 这里的长度取值，对应加壳时长度的赋值都可以做些简化
-        byte[] dexlen = new byte[4];
-        System.arraycopy(apkdata, ablen - 4, dexlen, 0, 4);
-        ByteArrayInputStream bais = new ByteArrayInputStream(dexlen);
-        DataInputStream in = new DataInputStream(bais);
-        int readInt = in.readInt();
-        System.out.println(Integer.toHexString(readInt));
-        byte[] newdex = new byte[readInt];
-        // 把被加壳apk内容拷贝到newdex中
-        System.arraycopy(apkdata, ablen - 4 - readInt, newdex, 0, readInt);
-        // 这里应该加上对于apk的解密操作，若加壳是加密处理的话
-        newdex = decrypt(newdex);
-        // 写入apk文件
-        File file = new File(apkFileName);
-        try {
-            FileOutputStream localFileOutputStream = new FileOutputStream(file);
-            localFileOutputStream.write(newdex);
-            localFileOutputStream.close();
-
-        } catch (IOException localIOException) {
-            throw new RuntimeException(localIOException);
-        }
-
-        // 分析被加壳的apk文件
-        ZipInputStream localZipInputStream = new ZipInputStream(
-                new BufferedInputStream(new FileInputStream(file)));
-        while (true) {
-            ZipEntry localZipEntry = localZipInputStream.getNextEntry();// 不了解这个是否也遍历子目录，看样子应该是遍历的
-            if (localZipEntry == null) {
-                localZipInputStream.close();
-                break;
-            }
-            // 取出被加壳apk用到的so文件，放到 libPath中（data/data/包名/payload_lib)
-            String name = localZipEntry.getName();
-            if (name.startsWith("lib/") && name.endsWith(".so")) {
-                File storeFile = new File(libPath + "/"
-                        + name.substring(name.lastIndexOf('/')));
-                storeFile.createNewFile();
-                FileOutputStream fos = new FileOutputStream(storeFile);
-                byte[] arrayOfByte = new byte[1024];
-                while (true) {
-                    int i = localZipInputStream.read(arrayOfByte);
-                    if (i == -1)
-                        break;
-                    fos.write(arrayOfByte, 0, i);
-                }
-                fos.flush();
-                fos.close();
-            }
-            localZipInputStream.closeEntry();
-        }
-        localZipInputStream.close();
-
-    }
-
-    /**
-     * 从apk包里面获取dex文件内容（byte）
-     *
-     * @return
-     * @throws IOException
-     */
-    private byte[] readDexFileFromApk() throws IOException {
-        ByteArrayOutputStream dexByteArrayOutputStream = new ByteArrayOutputStream();
-        ZipInputStream localZipInputStream = new ZipInputStream(
-                new BufferedInputStream(new FileInputStream(
-                        this.getApplicationInfo().sourceDir)));
-        while (true) {
-            ZipEntry localZipEntry = localZipInputStream.getNextEntry();
-            if (localZipEntry == null) {
-                localZipInputStream.close();
-                break;
-            }
-            if (localZipEntry.getName().equals("classes.dex")) {
-                byte[] arrayOfByte = new byte[1024];
-                while (true) {
-                    int i = localZipInputStream.read(arrayOfByte);
-                    if (i == -1)
-                        break;
-                    dexByteArrayOutputStream.write(arrayOfByte, 0, i);
-                }
-            }
-            localZipInputStream.closeEntry();
-        }
-        localZipInputStream.close();
-        return dexByteArrayOutputStream.toByteArray();
-    }
-
-    // //直接返回数据，读者可以添加自己解密方法
-    private byte[] decrypt(byte[] data) {
-        // 模似解密数据
-        for (int i = 0; i < data.length; i++) {
-            data[i] = (byte) (data[i] ^ 3);
-        }
-        return data;
     }
 }

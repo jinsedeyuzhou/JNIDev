@@ -5,7 +5,9 @@ package com.ebrightmoon.jni.test;
 import com.ebrightmoon.jni.shell.ApkShellUtils;
 import com.ebrightmoon.jni.shell.FileUtils;
 
-
+/**
+ * 给应用加壳
+ */
 
 public class Main {
 
@@ -20,7 +22,7 @@ public class Main {
             }
 //            FileUtils.delete("/Users/wyy/AndroidProject/JNIDev/demo");
 //            FileUtils.delete("/Users/wyy/AndroidProject/JNIDev/demo");
-//            FileUtils.delete(outShellApkPath);
+            FileUtils.delete(outShellApkPath);
             ApkShellUtils.apkShell(primaryApkPath,unShellApkPath,outShellApkPath);
 //            FileUtils.unZip(primaryApkPath,"G:\\demo\\shell\\demo");
         } catch (Exception e) {

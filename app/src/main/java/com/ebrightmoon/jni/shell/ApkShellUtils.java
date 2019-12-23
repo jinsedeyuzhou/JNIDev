@@ -71,6 +71,10 @@ public class ApkShellUtils {
         ApkToolUtils.compile(unPrimaryApkDstPath,outApkPath);
         //v1签名
         SignUtils.V1(outApkPath, SignUtils.getDefaultKeystore());
+        SignUtils.zipalign(outApkPath);
+        SignUtils.verifyZipalign();
+        SignUtils.V2(outApkPath, SignUtils.getDefaultKeystore());
+
         //清理目录
         FileUtils.delete(unPrimaryApkDstPath);
         FileUtils.delete(unShellApkDstPath);
