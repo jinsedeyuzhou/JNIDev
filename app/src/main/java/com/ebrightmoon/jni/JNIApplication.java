@@ -14,6 +14,10 @@ public class JNIApplication extends Application {
         return context;
     }
 
+    public static void setContext(JNIApplication context) {
+        JNIApplication.context = context;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

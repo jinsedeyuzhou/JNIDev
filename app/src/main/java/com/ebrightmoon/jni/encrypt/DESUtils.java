@@ -7,10 +7,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-/**
- * 作者：create by  Administrator on 2019/2/14
- * 邮箱：
- */
 public class DESUtils {
     public static final String ALGORITHM = "DES";
 

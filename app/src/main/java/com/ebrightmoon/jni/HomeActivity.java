@@ -4,15 +4,21 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
+
+import java.util.List;
+
 
 /**
  * Time: 2019-11-25
@@ -23,7 +29,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private AppCompatButton btn_calculator;
     private AppCompatButton btn_encryption;
-    private RxPermissions rxPermissions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,19 +36,34 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         initView();
         initData();
-        rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe(granted -> {
-                    if (granted) { // Always true pre-M
-                        // I can control the camera now
-                    } else {
-                        // Oups permission denied
-                    }
-                });
     }
 
     private void initData() {
+        XXPermissions.with(this)
+                // 申请单个权限
+                .permission(Permission.READ_PHONE_STATE)
+                // 申请多个权限
+                // 设置权限请求拦截器（局部设置）
+                //.interceptor(new PermissionInterceptor())
+                // 设置不触发错误检测机制（局部设置）
+                //.unchecked()
+                .request(new OnPermissionCallback() {
 
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+                        if (all) {
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissions, boolean never) {
+                        if (never) {
+                            // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                        } else {
+                        }
+                    }
+                });
     }
 
     @Override

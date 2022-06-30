@@ -4,11 +4,12 @@ package com.ebrightmoon.jni.calculator;
  * Time: 2019-11-26
  * Author:wyy
  * Description:
+ * 计算器
  */
 public class Calculator {
 
     static {
-        System.loadLibrary("crypto");
+        System.loadLibrary("calculator");
     }
 
     public static native int add(int a, int b);

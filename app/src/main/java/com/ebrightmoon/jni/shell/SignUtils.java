@@ -11,7 +11,7 @@ public class SignUtils {
     private static final String APKSIGNER_PATH = "tools/apksigner.jar";
     public static void V1(String apkPath,Keystore keystore) throws IOException, InterruptedException {
         String cmd = "jarsigner -verbose -keystore %s -storepass %s -keypass %s %s %s -digestalg SHA1 -sigalg SHA1withRSA";
-        cmd = String.format(cmd, new String[]{keystore.getPath(),keystore.getAliasPassword(),keystore.getPassword(),apkPath,keystore.getAliasName()});
+        cmd = String.format(cmd, (Object) new String[]{keystore.getPath(),keystore.getAliasPassword(),keystore.getPassword(),apkPath,keystore.getAliasName()});
         CmdExecutor.executor(cmd);
     }
 
@@ -27,7 +27,7 @@ public class SignUtils {
      */
     public static void V2(String apkPath,Keystore keystore) throws IOException, InterruptedException {
         String cmd = "java -jar %s sign --ks  %s  --ks-key-alias %s --ks-pass pass:%s --key-pass pass:%s --out %s %s";
-        cmd = String.format(cmd, new String[]{APKSIGNER_PATH,keystore.getPath(),keystore.getAliasName(),keystore.getPassword(),keystore.getAliasPassword(),apkPath,apkPath});
+        cmd = String.format(cmd, (Object) new String[]{APKSIGNER_PATH,keystore.getPath(),keystore.getAliasName(),keystore.getPassword(),keystore.getAliasPassword(),apkPath,apkPath});
         CmdExecutor.executor(cmd);
     }
 
@@ -39,7 +39,7 @@ public class SignUtils {
      */
     public static void zipalign(String apkPath) throws IOException, InterruptedException {
         String cmd = "%s -v 4 %s %s";
-        cmd = String.format(cmd, new String[]{ZIPALIGN_PATH,apkPath,OUT_PATH});
+        cmd = String.format(cmd, (Object) new String[]{ZIPALIGN_PATH,apkPath,OUT_PATH});
         CmdExecutor.executor(cmd);
     }
 
@@ -50,7 +50,7 @@ public class SignUtils {
      */
     public static void verifyZipalign() throws IOException, InterruptedException {
         String cmd = "%s -c -v 4 %s";
-        cmd = String.format(cmd, new String[]{ZIPALIGN_PATH,OUT_PATH});
+        cmd = String.format(cmd, (Object) new String[]{ZIPALIGN_PATH,OUT_PATH});
         CmdExecutor.executor(cmd);
     }
 

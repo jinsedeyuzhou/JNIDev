@@ -21,8 +21,18 @@ public class JNITool {
 
     private static native byte[] jnidecrypt(String str);
 
+
+    private static native String desencrypt(byte[] bytes);
+
+    private static native byte[] desdecrypt(String str);
+
+    private static native String rsaencrypt(byte[] bytes);
+
+    private static native byte[] rsadecrypt(String str);
+
     /**
      * 密码进行MD5 加盐进行两次md5
+     *
      * @param str
      * @return
      */
@@ -31,24 +41,27 @@ public class JNITool {
     /**
      * 使用的是AES 加密 密钥在C中也可以。通过网络获取RSA公钥。
      * 加密
+     *
      * @param str
+     * @param type 0 AES 1 DES 2 RSA 4 自定义
      * @return
      */
-    public static String encrypt(String str) {
+    public static String encrypt(String str, int type) {
         return jniencrypt(str.getBytes());
     }
 
     /**
      * 解密
+     * @param type 0 AES 1 DES 2 RSA 4 自定义
      * @param str
      * @return
      */
-    public static String decrypt(String str) {
+    public static String decrypt(String str,int type) {
         return new String(jnidecrypt(str));
     }
 
     /**
-     *   获取签名 获取签名hashcode  用来在so库进行对比
+     * 获取签名 获取签名hashcode  用来在so库进行对比
      */
 
     public static int getSignature(Context context) {
@@ -57,8 +70,7 @@ public class JNITool {
 
             Signature sign = packageInfo.signatures[0];
             return sign.hashCode();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;
@@ -70,5 +82,5 @@ public class JNITool {
      * which is packaged with this application.
      * 获取唯一值
      */
-    public  native String stringFromJNI(Context context);
+    public native String stringFromJNI(Context context);
 }

@@ -18,10 +18,7 @@ import java.util.Map;
 
 import javax.crypto.Cipher;
 
-/**
- * 作者：create by  Administrator on 2019/2/18
- * 邮箱：
- */
+
 public class RSAHelper {
 
     public static final String KEY_ALGORITHM = "RSA";

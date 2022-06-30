@@ -2,11 +2,6 @@ package com.ebrightmoon.jni.encrypt;
 
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by Administrator on 2017/10/18.
- * 邮箱:
- * 电话:
- */
 
 public class Base64Util {
 

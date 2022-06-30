@@ -12,10 +12,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * 作者：create by  Administrator on 2019/2/18
- * 邮箱：
- */
+
 public class Base64Utils {
     /**
      * 文件读取缓冲区大小
