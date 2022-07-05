@@ -17,8 +17,20 @@ public class JNITool {
     }
 
 
+    /**
+     * AES 加密
+     *
+     * @param bytes
+     * @return
+     */
     private static native String jniencrypt(byte[] bytes);
 
+    /**
+     * AES 解密
+     *
+     * @param str
+     * @return
+     */
     private static native byte[] jnidecrypt(String str);
 
 
@@ -52,11 +64,12 @@ public class JNITool {
 
     /**
      * 解密
+     *
      * @param type 0 AES 1 DES 2 RSA 4 自定义
      * @param str
      * @return
      */
-    public static String decrypt(String str,int type) {
+    public static String decrypt(String str, int type) {
         return new String(jnidecrypt(str));
     }
 

@@ -118,7 +118,13 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
-
+    sourceSets {
+        main {
+            jni {
+                srcDirs 'src/main/jniLibs'
+            }
+        }
+    }
     flavorDimensions 'cpuArch'
     productFlavors {
         arm7 {
