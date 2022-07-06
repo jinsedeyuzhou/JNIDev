@@ -12,7 +12,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,7 +20,6 @@ import com.ebrightmoon.jni.crypto.Crypto;
 import com.ebrightmoon.jni.crypto.JNITool;
 import com.ebrightmoon.jni.encrypt.AESCrypt;
 import com.ebrightmoon.jni.encrypt.DESUtils;
-import com.ebrightmoon.jni.encrypt.RSAHelper;
 
 import java.security.GeneralSecurityException;
 
@@ -29,7 +27,7 @@ import java.security.GeneralSecurityException;
  * 加密解密测试
  */
 public class EncryActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG =EncryActivity.class.getSimpleName() ;
+    private static final String TAG = EncryActivity.class.getSimpleName();
     private static final int REQUEST_READ_PHONE_STATE = 1000;
     public static final String serverPrivateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALXwJ4I+ZJUfswcy3eeuMhQVSm/WzfIYDlYv3ni5vm1Iv06V2/49rwirPGUoT3k/rfhzx1MmMWv31UIz9yozN+7CcDDdz76wuc9kIJ4AR830ELZMTzqoHWPSAqaFKDeGKXX9PDpyPswFLCX1WtHHm6K/M+ntP+6J6Pi6mqt9P3epAgMBAAECgYAtgNXwzjgLz/TPvRog4sFlonmOhTPW88tKJQjIOvR0krg+KF7wNG89hM5DIpTV52ZUeGiG1EuSDFcLCsIrjMnVAjEQtfEzD2fEW9VUxucxdJDWyDNK6qxji+NO1vy6U779K675rFvJxmsDxNvKph1ht0gYlDn5RyFd4nrOrfgjTQJBAOPrQ4NmdWFS94NYkJ4fIseZPfRSm9NzqHlFp4Pr44nUrLKYeGVCIjnfsGAWuZ7sxLSkSSLN0mS/Rk7PH+7uv1cCQQDMWp5fBSRBCRsTB8v4YFumIPxpYms6cWChjZ1GvnR+4T5DJ/4pE768LvQP8G9Hh18JzHaxwplTDhlhJfEIHCD/AkEAiTMHOiNER6jk/DklHTpK+nJB/EB6MyitYwtOEri+CStwJjZoSzQrXEFOcBld9dA7fS5kJEJYA3OtBCXk6DTqEwJAemftZU1XIf2qUgPhka1mOGSZzSY+xIsVLq/8/VsnvLh+6wsRmtlQ7rfRSZrjjRzxOJVYo7HE1ZMkcKShdBIlUQJAd3a+zP2rqh/rJu8izyE5KGGJLMlV1wQKOPFpNAGi+90VpkW3wETvhk7RL1KIxv5jVIYqfu4vrxEkpzvY75ZKJA==";
     public static final String serverPublicKey = "BwIAAACkAABSU0EyAAQAAAEAAQBZF5P+EkFcZUOtwLZUf7Yux/HwKNONLS9xXkSxMGZr1EEA8jDS/QOTCxl3T31A9NttBhBqbYlhxrRhWOTeaBijQpAmoU44Ol3JW9Grq31W5xPe53ZjT5U1B4pXyqkYUVofIoz51jGaPNsX77zoEodQ8T2RBTCdziqv80hqRnD12YFF8oU+YwjUop4Fdpb1T8angHcUcr3CLjDZc/u7AZUFsL9aqL0C9cwRLZtljjmCPwiVJP9w8WryX3dBQTIoF/3ZrT7mcN20q39msZSaOWKt0yNWDDNhUbsi7gDlAAVjsPluql5/nu2c19H9r0fXLP+SIo97mAtbSD/3lwql43bcgaK8GA5lsQdh5PNJcremDzmCcVH539idEVdkr66q2n500Xm+2vDYC44F2RNFFf8kkeMMUXzXF4A9mwe5rpneh8E/pXuGRuSxm77rw3zVhHUhFrJqjy27goZl9zPyX1Sfl51FsyhO9T5DZLnGpF3Cn3T/wmt6NZOqOVctkVN8sYYZTJmwzW+PW8YiaJZRiaEj6RFRf/Kkybx2oxj3w3jGr72UKKihp/kNP1q/+EHtt81krynPMK07w+Nx/B5DyrMpAYCGKEH5M1geyID5NYbOybZV/9g1orh8m4S4924tzbY7OHchweZGf6N19E6lyni8vZUmdh97iCI06eCgoD2p7qZ17mIZ18pPynmPJfcAuxGvMlBL+d5GKanAeddlU5DCx8vk47bIpYzKBLvmzdV8pjwLmYIp7Hp6PukZNgX+WLo=";
@@ -54,12 +52,12 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
 
         Log.e(TAG, "signature：" + JNITool.getSignature(this));
         String originalStr = "123";
-        JNITool jniTool=new JNITool();
-        String encrypt = JNITool.encrypt(originalStr,0);
+        JNITool jniTool = new JNITool();
+        String encrypt = JNITool.encrypt(originalStr, 0);
         Log.e(TAG, "原字符串：" + originalStr);
         Log.e(TAG, "AES ECB PKCS7Padding 加密：" + encrypt);
-        Log.e(TAG, "AES ECB PKCS7Padding 解密：" + JNITool.decrypt(encrypt,0));
-        Log.e(TAG, "stringFromJNI：" + jniTool.stringFromJNI(this));
+        Log.e(TAG, "AES ECB PKCS7Padding 解密：" + JNITool.decrypt(encrypt, 0));
+        Log.e(TAG, "获取唯一值：" + jniTool.getUUID(this));
 
         String pwdStr = "pwd123456";
         Log.e(TAG, "password: " + pwdStr);
@@ -178,7 +176,7 @@ public class EncryActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.rb_des:
                 try {
-                    laws = DESUtils.decrypt(text,password);
+                    laws = DESUtils.decrypt(text, password);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

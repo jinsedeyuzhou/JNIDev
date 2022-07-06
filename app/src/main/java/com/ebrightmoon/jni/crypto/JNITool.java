@@ -16,6 +16,9 @@ public class JNITool {
         System.loadLibrary("crypto");
     }
 
+    public static native String cusEncrypt(String encrypt, int length);
+
+    public static native String cusDecrypt(String decrypt, int length);
 
     /**
      * AES 加密
@@ -23,7 +26,7 @@ public class JNITool {
      * @param bytes
      * @return
      */
-    private static native String jniencrypt(byte[] bytes);
+    private static native String aesEncrypt(byte[] bytes);
 
     /**
      * AES 解密
@@ -31,7 +34,7 @@ public class JNITool {
      * @param str
      * @return
      */
-    private static native byte[] jnidecrypt(String str);
+    private static native byte[] aesDecrypt(String str);
 
 
     private static native String desencrypt(byte[] bytes);
@@ -59,7 +62,23 @@ public class JNITool {
      * @return
      */
     public static String encrypt(String str, int type) {
-        return jniencrypt(str.getBytes());
+        String temp = null;
+        switch (type) {
+            case 0:
+                temp = aesEncrypt(str.getBytes());
+                break;
+            case 1:
+                temp = desencrypt(str.getBytes());
+                break;
+            case 2:
+                temp = rsaencrypt(str.getBytes());
+                break;
+            case 3:
+                temp = cusDecrypt(str, 18);
+                break;
+
+        }
+        return temp;
     }
 
     /**
@@ -70,7 +89,23 @@ public class JNITool {
      * @return
      */
     public static String decrypt(String str, int type) {
-        return new String(jnidecrypt(str));
+        byte[] temp = null;
+        switch (type) {
+            case 0:
+                temp = aesDecrypt(str);
+                break;
+            case 1:
+                temp = desdecrypt(str);
+                break;
+            case 2:
+                temp = rsadecrypt(str);
+                break;
+            case 3:
+                temp = cusDecrypt(str, 18).getBytes();
+                break;
+
+        }
+        return new String(temp);
     }
 
     /**
@@ -80,7 +115,6 @@ public class JNITool {
     public static int getSignature(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
-
             Signature sign = packageInfo.signatures[0];
             return sign.hashCode();
         } catch (Exception e) {
@@ -95,5 +129,5 @@ public class JNITool {
      * which is packaged with this application.
      * 获取唯一值
      */
-    public native String stringFromJNI(Context context);
+    public native String getUUID(Context context);
 }

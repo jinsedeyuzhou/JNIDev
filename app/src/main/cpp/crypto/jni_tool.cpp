@@ -3,6 +3,14 @@
 
 #include "jni_tool.hpp"
 
+// 内部链接
+static const char *kTAG = "crypto";
+
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, kTAG, __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, kTAG, __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, kTAG, __VA_ARGS__))
+#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, kTAG, __VA_ARGS__))
+
 static const char *app_packageName = "com.ebrightmoon.jni";
 static const int app_signature_hash_code = -349316582;
 static const uint8_t AES_KEY[] = "xS544RXNm0P4JVLHIEsTqJNzDbZhiLjr";
@@ -22,6 +30,7 @@ static jobject getApplication(JNIEnv *env) {
     }
     return application;
 }
+
 /**
  * 检查签名
  * @param env
@@ -48,11 +57,13 @@ static bool checkSignature(JNIEnv *env) {
     jstring application_package = (jstring) env->CallObjectMethod(context, methodID_pack);
     const char *package_name = env->GetStringUTFChars(application_package, 0);
     // 获得PackageInfo
-    jobject packageInfo = env->CallObjectMethod(packageManager, methodID_pm, application_package, 64);
+    jobject packageInfo = env->CallObjectMethod(packageManager, methodID_pm, application_package,
+                                                64);
     jclass packageinfo_clazz = env->GetObjectClass(packageInfo);
     jfieldID fieldID_signatures = env->GetFieldID(packageinfo_clazz,
                                                   "signatures", "[Landroid/content/pm/Signature;");
-    jobjectArray signature_arr = (jobjectArray) env->GetObjectField(packageInfo, fieldID_signatures);
+    jobjectArray signature_arr = (jobjectArray) env->GetObjectField(packageInfo,
+                                                                    fieldID_signatures);
     //Signature数组中取出第一个元素
     jobject signature = env->GetObjectArrayElement(signature_arr, 0);
     //读signature的hashcode
@@ -77,7 +88,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (checkSignature(env)) {
         return JNI_VERSION_1_6;
     }
-    return JNI_ERR;
 }
 
 /**
@@ -85,7 +95,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
  */
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_ebrightmoon_jni_crypto_JNITool_jniencrypt(JNIEnv *env, jclass type, jbyteArray jbArr) {
+Java_com_ebrightmoon_jni_crypto_JNITool_aesEncrypt(JNIEnv *env, jclass type, jbyteArray jbArr) {
 
     char *str = NULL;
     jsize alen = env->GetArrayLength(jbArr);
@@ -105,7 +115,7 @@ Java_com_ebrightmoon_jni_crypto_JNITool_jniencrypt(JNIEnv *env, jclass type, jby
  */
 extern "C"
 JNIEXPORT jbyteArray JNICALL
-Java_com_ebrightmoon_jni_crypto_JNITool_jnidecrypt(JNIEnv *env, jclass type, jstring out_str) {
+Java_com_ebrightmoon_jni_crypto_JNITool_aesDecrypt(JNIEnv *env, jclass type, jstring out_str) {
 
     const char *str = env->GetStringUTFChars(out_str, 0);
     char *result = AES_ECB_PKCS7_Decrypt(str, AES_KEY);//AES ECB PKCS7Padding解密
@@ -130,7 +140,8 @@ Java_com_ebrightmoon_jni_crypto_JNITool_pwdMD5(JNIEnv *env, jclass type, jstring
 
 
 
-extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_stringFromJNI(
+extern "C"
+JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_getUUID(
         JNIEnv *env,
         jobject thiz,
         jobject argContext) {
@@ -224,3 +235,52 @@ Java_com_ebrightmoon_jni_crypto_JNITool_rsadecrypt(JNIEnv *env, jclass type, jst
     env->SetByteArrayRegion(jbArr, 0, len, (jbyte *) result);
     return jbArr;
 }
+
+// String 转成char 字符
+extern "C" char *Jstring2CStr(JNIEnv *env, jstring jstr) {
+//    const char *strs=(*env)->GetStringUTFChars(env,strs,0);
+    char *rtn = NULL;
+    jclass clsstring = env->FindClass("java/lang/String");
+    jstring strencode = env->NewStringUTF("GB2312");
+    jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
+    jbyteArray barr = (jbyteArray) env->CallObjectMethod(jstr, mid,
+                                                         strencode); // String .getByte("GB2312");
+    jsize alen = env->GetArrayLength(barr);
+    jbyte *ba = env->GetByteArrayElements(barr, JNI_FALSE);
+    if (alen > 0) {
+        rtn = (char *) malloc(alen + 1); //"\0”
+        memcpy(rtn, ba, alen);
+        rtn[alen] = 0;
+    }
+    env->ReleaseByteArrayElements(barr, ba, 0);
+    return rtn;
+}
+
+// 自定义加密
+extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_cusEncrypt
+        (JNIEnv *env, jclass obj, jstring text, jint length) {
+    char *cstr = Jstring2CStr(env, text);
+    int i;
+    for (i = 0; i < length; i++) {
+        *(cstr + i) += 1; //加密算法，将字符串每个字符加1
+    }
+    return env->NewStringUTF(cstr);
+}
+
+/**
+ * Class: Java_com_ebrightmoon_jni_crypto_Crypto
+ * Method: decrypt
+ * Signature:(Ljava/lang/String;)Ljava/lang/String
+ * 自定义解密
+ */
+extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_cusDecrypt
+        (JNIEnv *env, jclass obj, jstring text, jint length) {
+    char *cstr = Jstring2CStr(env, text);
+    int i;
+    for (i = 0; i < length; i++) {
+        *(cstr + i) -= 1;
+    }
+    return env->NewStringUTF(cstr);
+}
+
+

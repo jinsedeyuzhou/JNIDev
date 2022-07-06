@@ -22,7 +22,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_AB
 
 set(crypto_srcs
         crypto.c
-        # calculator.c
         jni_tool.cpp
         md5.cpp
         aes.c

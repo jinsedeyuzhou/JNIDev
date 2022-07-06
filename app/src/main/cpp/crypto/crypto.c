@@ -32,7 +32,7 @@ char *Jstring2CStr(JNIEnv *env, jstring jstr) {
     return rtn;
 }
 
-// 加密
+// 自定义加密
 JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_encrypt
         (JNIEnv *env, jobject obj, jstring text, jint length) {
     char *cstr = Jstring2CStr(env, text);
@@ -47,7 +47,7 @@ JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_encrypt
  * Class: Java_com_ebrightmoon_jni_crypto_Crypto
  * Method: decrypt
  * Signature:(Ljava/lang/String;)Ljava/lang/String
- * 解密
+ * 自定义解密
  */
 JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_decrypt
         (JNIEnv *env, jobject obj, jstring text, jint length) {
