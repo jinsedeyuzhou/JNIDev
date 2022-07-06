@@ -36,6 +36,10 @@ char *Jstring2CStr(JNIEnv *env, jstring jstr) {
 JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_encrypt
         (JNIEnv *env, jobject obj, jstring text, jint length) {
     char *cstr = Jstring2CStr(env, text);
+    int size = strlen(cstr);
+    if (size < length) {
+        length = size;
+    }
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) += 1; //加密算法，将字符串每个字符加1
@@ -52,6 +56,10 @@ JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_encrypt
 JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_Crypto_decrypt
         (JNIEnv *env, jobject obj, jstring text, jint length) {
     char *cstr = Jstring2CStr(env, text);
+    int size = strlen(cstr);
+    if (size < length) {
+        length = size;
+    }
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) -= 1;

@@ -237,7 +237,7 @@ Java_com_ebrightmoon_jni_crypto_JNITool_rsadecrypt(JNIEnv *env, jclass type, jst
 }
 
 // String 转成char 字符
-extern "C" char *Jstring2CStr(JNIEnv *env, jstring jstr) {
+extern "C" char *JstringtoCStr(JNIEnv *env, jstring jstr) {
 //    const char *strs=(*env)->GetStringUTFChars(env,strs,0);
     char *rtn = NULL;
     jclass clsstring = env->FindClass("java/lang/String");
@@ -259,7 +259,7 @@ extern "C" char *Jstring2CStr(JNIEnv *env, jstring jstr) {
 // 自定义加密
 extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_cusEncrypt
         (JNIEnv *env, jclass obj, jstring text, jint length) {
-    char *cstr = Jstring2CStr(env, text);
+    char *cstr = JstringtoCStr(env, text);
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) += 1; //加密算法，将字符串每个字符加1
@@ -275,7 +275,7 @@ extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_cus
  */
 extern "C" JNIEXPORT jstring JNICALL Java_com_ebrightmoon_jni_crypto_JNITool_cusDecrypt
         (JNIEnv *env, jclass obj, jstring text, jint length) {
-    char *cstr = Jstring2CStr(env, text);
+    char *cstr = JstringtoCStr(env, text);
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) -= 1;

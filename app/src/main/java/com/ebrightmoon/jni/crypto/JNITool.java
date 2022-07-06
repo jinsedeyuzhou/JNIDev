@@ -26,7 +26,7 @@ public class JNITool {
      * @param bytes
      * @return
      */
-    private static native String aesEncrypt(byte[] bytes);
+    public static native String aesEncrypt(byte[] bytes);
 
     /**
      * AES 解密
@@ -34,16 +34,16 @@ public class JNITool {
      * @param str
      * @return
      */
-    private static native byte[] aesDecrypt(String str);
+    public static native byte[] aesDecrypt(String str);
 
 
-    private static native String desencrypt(byte[] bytes);
+    public static native String desencrypt(byte[] bytes);
 
-    private static native byte[] desdecrypt(String str);
+    public static native byte[] desdecrypt(String str);
 
-    private static native String rsaencrypt(byte[] bytes);
+    public static native String rsaencrypt(byte[] bytes);
 
-    private static native byte[] rsadecrypt(String str);
+    public static native byte[] rsadecrypt(String str);
 
     /**
      * 密码进行MD5 加盐进行两次md5
@@ -74,7 +74,7 @@ public class JNITool {
                 temp = rsaencrypt(str.getBytes());
                 break;
             case 3:
-                temp = cusDecrypt(str, 18);
+                temp = cusEncrypt(str, 18);
                 break;
 
         }
@@ -129,5 +129,5 @@ public class JNITool {
      * which is packaged with this application.
      * 获取唯一值
      */
-    public native String getUUID(Context context);
+    public  native String getUUID(Context context);
 }
